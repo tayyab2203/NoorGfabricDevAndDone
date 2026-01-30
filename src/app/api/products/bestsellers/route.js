@@ -27,6 +27,6 @@ export async function GET() {
     return success(products);
   } catch (e) {
     logger.error("GET /api/products/bestsellers: " + e.message);
-    return error("Failed to fetch bestsellers", 500);
+    return error("Service temporarily unavailable", 503);
   }
 }

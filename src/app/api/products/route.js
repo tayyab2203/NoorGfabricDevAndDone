@@ -44,6 +44,6 @@ export async function GET(request) {
     return success(data);
   } catch (e) {
     logger.error("GET /api/products: " + e.message);
-    return error("Failed to fetch products", 500);
+    return error("Service temporarily unavailable", 503);
   }
 }

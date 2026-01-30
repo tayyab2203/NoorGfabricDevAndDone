@@ -120,7 +120,7 @@ export async function GET() {
     return success(cart.items ? { items: cart.items, _id: cart._id } : { items: [], _id: null });
   } catch (e) {
     logger.error("GET /api/cart: " + e.message);
-    return error("Failed to fetch cart", 500);
+    return error("Service temporarily unavailable", 503);
   }
 }
 

@@ -27,3 +27,13 @@
 - **CORS_ORIGIN** – Optional; allowed origin for API CORS.
 - **RESEND_API_KEY** – Optional; for order confirmation emails.
 - **BLOB_READ_WRITE_TOKEN** – Required for image uploads (Collections, Products). Create a Blob store in Vercel Dashboard → Storage → Blob, then add the token to env.
+
+## Troubleshooting 500 / 503 in production
+
+If `/api/collections`, `/api/cart`, or `/api/products` return **500** or **503** on Vercel:
+
+1. **Set MONGODB_URI** in Vercel → Project → Settings → Environment Variables (for Production). Use your MongoDB connection string (e.g. from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)).
+2. **MongoDB Atlas**: In Atlas → Network Access, add **0.0.0.0/0** (allow from anywhere) so Vercel’s servers can connect. Or add [Vercel’s IP ranges](https://vercel.com/docs/security/ip-addresses) if you prefer to restrict.
+3. **Set NEXTAUTH_URL** to your production URL, e.g. `https://noor-gfabric-dev-and-done.vercel.app`, and **NEXTAUTH_SECRET** to any long random string.
+4. **Redeploy** after changing env vars (Vercel uses env at build/runtime; a new deployment may be needed).
+5. Check **Vercel → Deployments → [latest] → Functions** (or Runtime Logs) for the actual error message (e.g. connection timeout, auth failed).

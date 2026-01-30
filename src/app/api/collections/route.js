@@ -22,6 +22,6 @@ export async function GET() {
     return success(items);
   } catch (e) {
     logger.error("GET /api/collections: " + e.message);
-    return error("Failed to fetch collections", 500);
+    return error("Service temporarily unavailable", 503);
   }
 }
