@@ -37,3 +37,15 @@ If `/api/collections`, `/api/cart`, or `/api/products` return **500** or **503**
 3. **Set NEXTAUTH_URL** to your production URL, e.g. `https://noor-gfabric-dev-and-done.vercel.app`, and **NEXTAUTH_SECRET** to any long random string.
 4. **Redeploy** after changing env vars (Vercel uses env at build/runtime; a new deployment may be needed).
 5. Check **Vercel → Deployments → [latest] → Functions** (or Runtime Logs) for the actual error message (e.g. connection timeout, auth failed).
+
+### Still failing after adding 0.0.0.0/0?
+
+1. **Get a hint:** Open `https://YOUR-PRODUCTION-URL/api/health` in the browser (or use curl). The JSON may include `mongodbHint` when MongoDB fails:
+   - **ip_blocked** – Atlas is still blocking. Confirm **Network Access** has `0.0.0.0/0` and status is "Active". Wait 2–5 minutes after adding. Ensure the connection string host matches the cluster that has 0.0.0.0/0 (e.g. `cluster0.xxxxx.mongodb.net`).
+   - **auth_failed** – Wrong username/password or user was deleted. In Atlas → **Database Access** → check the user in your URI exists and has "Read and write to any database". If the password has special characters (`@`, `#`, `:`, etc.), [URL-encode](https://developer.mozilla.org/en-US/docs/Glossary/Percent-encoding) it in `MONGODB_URI`.
+   - **timeout_or_dns** – Connection times out or host not found. Confirm the host in the URI matches your cluster (Atlas → Clusters → Connect → "Drivers" → copy the connection string). Check the cluster is not paused.
+   - **connection_failed** – Generic. Check Vercel **Runtime Logs** for the full error.
+
+2. **Verify MONGODB_URI in Vercel:** Project → Settings → Environment Variables. Ensure **MONGODB_URI** is set for **Production** (and Preview if you test preview deployments). No leading/trailing spaces. Use the **SRV** connection string from Atlas (e.g. `mongodb+srv://user:password@cluster0.xxxxx.mongodb.net/dbname?retryWrites=true&w=majority`).
+
+3. **Redeploy** after any env change (Deployments → … → Redeploy).
