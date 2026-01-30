@@ -4,21 +4,28 @@ async function getData() {
   try {
     const base = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const res = await fetch(`${base}/api/collections`, { cache: "no-store" });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.data || data || [];
+    const data = await res.json().catch(() => ({}));
+    const collections = data.data ?? data ?? [];
+    if (!res.ok) {
+      return { collections: [], error: true, status: res.status };
+    }
+    return { collections: Array.isArray(collections) ? collections : [], error: false };
   } catch {
-    return [];
+    return { collections: [], error: true };
   }
 }
 
 export default async function CollectionsPage() {
-  const collections = await getData();
+  const { collections, error } = await getData();
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <h1 className="mb-6 text-2xl font-bold text-[var(--color-primary-dark)] sm:mb-8 sm:text-3xl">Collections</h1>
       <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {collections.length === 0 ? (
+        {error ? (
+          <p className="rounded-lg bg-amber-50 p-4 text-amber-800">
+            Collections could not be loaded right now. Please try again later. If the problem continues, the site may be temporarily unable to reach the database.
+          </p>
+        ) : collections.length === 0 ? (
           <p className="text-[var(--color-primary-dark)]/70">No collections yet.</p>
         ) : (
           collections.map((c) => (

@@ -30,10 +30,10 @@
 
 ## Troubleshooting 500 / 503 in production
 
-If `/api/collections`, `/api/cart`, or `/api/products` return **500** or **503** on Vercel:
+If `/api/collections`, `/api/cart`, or `/api/products` return **500** or **503** on Vercel, or you see in Vercel logs: *"Could not connect to any servers in your MongoDB Atlas cluster"* or *"IP that isn't whitelisted"* — Atlas is blocking Vercel’s IPs. Fix Network Access in Atlas (step 2), then redeploy.
 
 1. **Set MONGODB_URI** in Vercel → Project → Settings → Environment Variables (for Production). Use your MongoDB connection string (e.g. from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)).
-2. **MongoDB Atlas**: In Atlas → Network Access, add **0.0.0.0/0** (allow from anywhere) so Vercel’s servers can connect. Or add [Vercel’s IP ranges](https://vercel.com/docs/security/ip-addresses) if you prefer to restrict.
+2. **MongoDB Atlas (fix "IP not whitelisted")**: In Atlas → Network Access, add **0.0.0.0/0** (allow from anywhere) so Vercel’s servers can connect. Or add [Vercel’s IP ranges](https://vercel.com/docs/security/ip-addresses) if you prefer to restrict.
 3. **Set NEXTAUTH_URL** to your production URL, e.g. `https://noor-gfabric-dev-and-done.vercel.app`, and **NEXTAUTH_SECRET** to any long random string.
 4. **Redeploy** after changing env vars (Vercel uses env at build/runtime; a new deployment may be needed).
 5. Check **Vercel → Deployments → [latest] → Functions** (or Runtime Logs) for the actual error message (e.g. connection timeout, auth failed).
