@@ -7,6 +7,9 @@ import logger from "@/lib/logger";
 
 export async function GET() {
   try {
+    if (!process.env.MONGODB_URI) {
+      return error("Database not configured", 503);
+    }
     await connectDB();
     const aggregated = await Order.aggregate([
       { $unwind: "$items" },

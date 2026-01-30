@@ -8,6 +8,9 @@ const CACHE_KEY = "collections:list";
 
 export async function GET() {
   try {
+    if (!process.env.MONGODB_URI) {
+      return error("Database not configured", 503);
+    }
     const cached = await get(CACHE_KEY);
     if (cached) return success(cached);
 

@@ -17,9 +17,11 @@
 
 - After placing an order, `sendOrderConfirmationEmail()` in `src/lib/email.js` is called. Configure **RESEND_API_KEY** (or your provider) and implement the send in `src/lib/email.js` to send real emails.
 
-## Environment variables
+## Environment variables (Vercel)
 
-- **MONGODB_URI** – Required.
+**Set these in Vercel Dashboard → Project → Settings → Environment Variables** for production. Without **MONGODB_URI**, public APIs (collections, cart, products) return 503.
+
+- **MONGODB_URI** – **Required.** Your MongoDB connection string (e.g. Atlas). If missing, `/api/collections`, `/api/cart`, `/api/products` return 503.
 - **NEXTAUTH_SECRET** – Required for auth.
 - **GOOGLE_CLIENT_ID** / **GOOGLE_CLIENT_SECRET** – For Google OAuth.
 - **CORS_ORIGIN** – Optional; allowed origin for API CORS.

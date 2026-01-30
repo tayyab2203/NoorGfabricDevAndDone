@@ -10,6 +10,9 @@ const CACHE_PREFIX = "products:list:";
 
 export async function GET(request) {
   try {
+    if (!process.env.MONGODB_URI) {
+      return error("Database not configured", 503);
+    }
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
     const status = searchParams.get("status") || "ACTIVE";

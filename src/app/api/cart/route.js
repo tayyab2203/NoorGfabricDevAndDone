@@ -91,6 +91,9 @@ async function mergeGuestCartIntoUser(userId, guestSessionId) {
 
 export async function GET() {
   try {
+    if (!process.env.MONGODB_URI) {
+      return error("Database not configured", 503);
+    }
     const session = await auth();
     const cookieStore = await cookies();
     const guestIdFromCookie = cookieStore.get(GUEST_CART_COOKIE)?.value;
