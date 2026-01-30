@@ -1,15 +1,17 @@
 import Link from "next/link";
+import connectDB from "@/lib/db/mongoose";
+import Collection from "@/models/Collection";
 
 async function getData() {
+  if (!process.env.MONGODB_URI) {
+    return { collections: [], error: true };
+  }
   try {
-    const base = process.env.NEXTAUTH_URL || "http://localhost:3000";
-    const res = await fetch(`${base}/api/collections`, { cache: "no-store" });
-    const data = await res.json().catch(() => ({}));
-    const collections = data.data ?? data ?? [];
-    if (!res.ok) {
-      return { collections: [], error: true, status: res.status };
-    }
-    return { collections: Array.isArray(collections) ? collections : [], error: false };
+    await connectDB();
+    const items = await Collection.find({ status: "ACTIVE" })
+      .sort({ displayOrder: 1, name: 1 })
+      .lean();
+    return { collections: items || [], error: false };
   } catch {
     return { collections: [], error: true };
   }
