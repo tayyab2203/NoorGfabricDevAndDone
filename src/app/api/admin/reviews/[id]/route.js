@@ -4,7 +4,7 @@ import Review from "@/models/Review";
 import { requireAdmin } from "@/lib/auth";
 import logger from "@/lib/logger";
 
-async function PATCH(request, { params }) {
+async function patchReview(request, { params }) {
   try {
     const { id } = await params;
     const body = await request.json();
@@ -27,7 +27,7 @@ async function PATCH(request, { params }) {
   }
 }
 
-async function DELETE(request, { params }) {
+async function deleteReview(request, { params }) {
   try {
     const { id } = await params;
     await connectDB();
@@ -40,5 +40,5 @@ async function DELETE(request, { params }) {
   }
 }
 
-export const PATCH = requireAdmin((req, ctx) => PATCH(req, ctx));
-export const DELETE = requireAdmin((req, ctx) => DELETE(req, ctx));
+export const PATCH = requireAdmin((req, ctx) => patchReview(req, ctx));
+export const DELETE = requireAdmin((req, ctx) => deleteReview(req, ctx));

@@ -4,7 +4,7 @@ import User from "@/models/User";
 import { requireAdmin } from "@/lib/auth";
 import logger from "@/lib/logger";
 
-async function GET(request, { params }) {
+async function getUser(request, { params }) {
   try {
     const { id } = await params;
     await connectDB();
@@ -17,7 +17,7 @@ async function GET(request, { params }) {
   }
 }
 
-async function PATCH(request, { params }) {
+async function patchUser(request, { params }) {
   try {
     const { id } = await params;
     const body = await request.json();
@@ -46,8 +46,5 @@ async function PATCH(request, { params }) {
   }
 }
 
-const getHandler = (req, ctx) => GET(req, ctx);
-const patchHandler = (req, ctx) => PATCH(req, ctx);
-
-export const GET = requireAdmin(getHandler);
-export const PATCH = requireAdmin(patchHandler);
+export const GET = requireAdmin((req, ctx) => getUser(req, ctx));
+export const PATCH = requireAdmin((req, ctx) => patchUser(req, ctx));
